@@ -3,25 +3,24 @@ const searchbtn = document.querySelector(".searchbtn");
 let app__info = document.querySelector(".app__info");
 let app = document.querySelector(".app");
 const getWeatherData = async () => {
-  let p = document.createElement("p");
-  p.classList.add("loadingtag");
-  p.innerHTML = `Getting Details...`;
-  app__info.append(p);
-  app.style.height = "fit-content";
   let result = "";
   let cityname = document.querySelector(".inputfield").value;
   let url = `https://api.openweathermap.org/data/2.5/weather?q=${cityname}&appid=${apikey}&units=metric`;
+
+  console.log(searchbtn.value);
+  if (!cityname) {
+    alert("Enter City Name!!!");
+    return;
+  }
   try {
     const response = await fetch(url);
     result = await response.json();
   } catch (error) {
-    console.error(error);
+    app.innerHTML += `<p class ="error">Error ${error}</p>`;
   }
-  console.log(result);
 
   let { main, wind } = result;
   let { speed } = wind;
-  console.log(speed);
 
   console.log(main);
   let htmltag = `  <div class="app__info--datas maintemperature">
@@ -77,4 +76,9 @@ const getWeatherData = async () => {
   app__info.innerHTML = htmltag;
 };
 
+document.addEventListener("keypress", (e) => {
+  if (e.code == "Enter") {
+    getWeatherData();
+  }
+});
 searchbtn.addEventListener("click", getWeatherData);
